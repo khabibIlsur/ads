@@ -4,7 +4,7 @@
 #include <vector>
 
 template<typename T, typename Alloc = std::allocator<T>>
-class Forward_list {
+class ForwardList {
 private:
     struct BaseNode {
         BaseNode* next;
@@ -29,10 +29,10 @@ private:
 public:
     class iterator;
     
-    Forward_list(const Alloc& alloc = Alloc()) noexcept : fakeNode(), sz(0), alloc(alloc) {}
+    ForwardList(const Alloc& alloc = Alloc()) noexcept : fakeNode(), sz(0), alloc(alloc) {}
 
     template<typename InputIter>
-    Forward_list(InputIter begin, InputIter end, const Alloc& a = Alloc()): fakeNode(), sz(0), alloc(a) {
+    ForwardList(InputIter begin, InputIter end, const Alloc& a = Alloc()): fakeNode(), sz(0), alloc(a) {
         auto thisIter = &fakeNode;
         auto otherIter = begin;
         while (otherIter != end) {
@@ -59,7 +59,7 @@ public:
         thisIter->next = nullptr;
     }
 
-    Forward_list(std::initializer_list<T> ilist, const Alloc& a = Alloc()): fakeNode(), sz(0), alloc(a) {
+    ForwardList(std::initializer_list<T> ilist, const Alloc& a = Alloc()): fakeNode(), sz(0), alloc(a) {
         BaseNode* iter = &fakeNode;
         for (const auto& elem: ilist) {
             try {
@@ -84,7 +84,7 @@ public:
         iter->next = nullptr;
     }
 
-    Forward_list(const Forward_list& other): Forward_list() {
+    ForwardList(const ForwardList& other): ForwardList() {
         BaseNode* thisIter  = &fakeNode;
         const BaseNode* otherIter = &(other.fakeNode);
         while (otherIter->next != nullptr) {
@@ -111,22 +111,22 @@ public:
         thisIter->next = nullptr;
     }
 
-    Forward_list& operator=(const Forward_list& other) {
-        Forward_list copy = other;
+    ForwardList& operator=(const ForwardList& other) {
+        ForwardList copy = other;
         std::swap(fakeNode, copy.fakeNode);
         std::swap(sz, copy.sz);
         std::swap(alloc, copy.alloc);
         return *this;
     }
 
-    Forward_list(Forward_list&& other) noexcept: Forward_list() {
+    ForwardList(ForwardList&& other) noexcept: ForwardList() {
         std::swap(sz, other.sz);
         std::swap(fakeNode, other.fakeNode);
         std::swap(alloc, other.alloc);
     }
 
-    Forward_list& operator=(Forward_list&& other) noexcept {
-        Forward_list copy = std::move(other);
+    ForwardList& operator=(ForwardList&& other) noexcept {
+        ForwardList copy = std::move(other);
         std::swap(sz, copy.sz);
         std::swap(fakeNode, copy.fakeNode);
         std::swap(alloc, copy.alloc);
@@ -185,7 +185,6 @@ public:
         auto current = position.get_pointer();
         auto next    = current->next;
 
-        //в случае исключения список останется в валидном состоянии
         current->next = AllocTraits::allocate(alloc, 1);
 
         try {
@@ -224,7 +223,7 @@ public:
         erase_after(before_begin());
     }
    
-    ~Forward_list() {
+    ~ForwardList() {
         clear();
     }
 
@@ -240,7 +239,7 @@ public:
 };
 
 template<typename T, typename Alloc>
-class Forward_list<T, Alloc>::iterator {
+class ForwardList<T, Alloc>::iterator {
 private:
     BaseNode* ptr;
 public:
